@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>♡</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --rose:   #c8748a;
+      --blush:  #f0afc0;
+      --cream:  #fef0f3;
+      --glow:   rgba(200, 116, 138, 0.35);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 50% 30%, #2a1020 0%, #130810 55%, #080206 100%);
+      overflow: hidden;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+    }
+
+    canvas#hearts {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── pages ── */
+    .page {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      padding: 24px;
+      transition: opacity 1.6s ease;
+    }
+    .page.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* ── countdown page ── */
+    .eyebrow {
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(13px, 2.2vw, 18px);
+      color: var(--rose);
+      letter-spacing: 4px;
+      opacity: 0.75;
+      margin-bottom: 56px;
+      text-align: center;
+    }
+
+    .countdown-row {
+      display: flex;
+      align-items: flex-start;
+      gap: clamp(8px, 2.5vw, 28px);
+      margin-bottom: 56px;
+    }
+
+    .unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .unit-value {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(52px, 11vw, 100px);
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 1;
+      min-width: clamp(72px, 14vw, 140px);
+      text-align: center;
+      text-shadow:
+        0 0 30px var(--glow),
+        0 0 70px rgba(200, 116, 138, 0.12);
+      transition: transform 0.15s ease;
+    }
+
+    .unit-value.flip {
+      transform: scale(1.06);
+    }
+
+    .unit-label {
+      font-style: italic;
+      font-size: clamp(10px, 1.4vw, 13px);
+      color: var(--rose);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.65;
+    }
+
+    .sep {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(40px, 8vw, 80px);
+      color: var(--rose);
+      opacity: 0.35;
+      padding-top: 4px;
+      animation: breathe 2.4s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.35; }
+      50%       { opacity: 0.12; }
+    }
+
+    .ornament {
+      color: var(--rose);
+      opacity: 0.35;
+      font-size: 15px;
+      letter-spacing: 14px;
+    }
+
+    /* ── reveal page ── */
+    #page-reveal {
+      background: transparent;
+    }
+
+    .reveal-inner {
+      text-align: center;
+    }
+
+    .reveal-inner .big-heart {
+      font-size: clamp(64px, 15vw, 120px);
+      line-height: 1;
+      margin-bottom: 32px;
+      text-shadow: 0 0 60px var(--glow);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.06); }
+    }
+
+    .reveal-inner h2 {
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      font-size: clamp(16px, 3vw, 28px);
+      color: var(--cream);
+      letter-spacing: 4px;
+      opacity: 0.85;
+      margin-bottom: 18px;
+      text-shadow: 0 0 30px var(--glow);
+    }
+
+    .reveal-inner p {
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(13px, 1.8vw, 17px);
+      color: var(--rose);
+      opacity: 0.6;
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="hearts"></canvas>
+
+<!-- ── Page 1: Countdown ── -->
+<div class="page" id="page-countdown">
+  <p class="eyebrow">something is coming</p>
+
+  <div class="countdown-row">
+    <div class="unit">
+      <div class="unit-value" id="cd-days">--</div>
+      <div class="unit-label">days</div>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="unit-value" id="cd-hours">--</div>
+      <div class="unit-label">hours</div>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="unit-value" id="cd-mins">--</div>
+      <div class="unit-label">minutes</div>
+    </div>
+    <div class="sep">:</div>
+    <div class="unit">
+      <div class="unit-value" id="cd-secs">--</div>
+      <div class="unit-label">seconds</div>
+    </div>
+  </div>
+
+  <div class="ornament">· · · ♡ · · ·</div>
+</div>
+
+<!-- ── Page 2: Placeholder ── -->
+<div class="page hidden" id="page-reveal">
+  <div class="reveal-inner">
+    <div class="big-heart">♡</div>
+    <h2>It's time</h2>
+    <p>[ your content goes here ]</p>
+  </div>
+</div>
+
+<script>
+  // ── Target: 2026-05-13 16:00:00 UTC ──
+  const TARGET_MS = new Date('2026-05-13T16:00:00Z').getTime();
+
+  // timeOffset = serverNow - localNow  (ms)
+  let timeOffset = 0;
+  let revealed    = false;
+
+  // ── Time sync ──────────────────────────────────────────────
+  async function tryFetch(url) {
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error(r.status);
+    return r.json();
+  }
+
+  async function syncTime() {
+    const localBefore = Date.now();
+    try {
+      const data = await tryFetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+      timeOffset = data.unixtime * 1000 - Math.round((localBefore + Date.now()) / 2);
+    } catch (_) {
+      try {
+        const data2 = await tryFetch('https://timeapi.io/api/time/current/zone?timeZone=UTC');
+        timeOffset = new Date(data2.dateTime + 'Z').getTime() - Math.round((localBefore + Date.now()) / 2);
+      } catch (_2) {
+        timeOffset = 0;
+      }
+    }
+  }
+
+  function serverNow() { return Date.now() + timeOffset; }
+
+  // ── Countdown ──────────────────────────────────────────────
+  function pad(n) { return String(Math.floor(Math.abs(n))).padStart(2, '0'); }
+
+  const elDays  = document.getElementById('cd-days');
+  const elHours = document.getElementById('cd-hours');
+  const elMins  = document.getElementById('cd-mins');
+  const elSecs  = document.getElementById('cd-secs');
+
+  let lastSec = null;
+
+  function tick() {
+    if (revealed) return;
+
+    const diff = TARGET_MS - serverNow();
+
+    if (diff <= 0) {
+      reveal();
+      return;
+    }
+
+    const total = Math.floor(diff / 1000);
+    const secs  = total % 60;
+    const mins  = Math.floor(total / 60) % 60;
+    const hours = Math.floor(total / 3600) % 24;
+    const days  = Math.floor(total / 86400);
+
+    if (secs !== lastSec) {
+      lastSec = secs;
+      set(elSecs,  pad(secs));
+      set(elMins,  pad(mins));
+      set(elHours, pad(hours));
+      set(elDays,  pad(days));
+    }
+  }
+
+  function set(el, val) {
+    if (el.textContent === val) return;
+    el.textContent = val;
+    el.classList.add('flip');
+    setTimeout(() => el.classList.remove('flip'), 160);
+  }
+
+  function reveal() {
+    revealed = true;
+    document.getElementById('page-countdown').classList.add('hidden');
+    setTimeout(() => {
+      document.getElementById('page-reveal').classList.remove('hidden');
+    }, 800);
+  }
+
+  // ── Floating hearts ────────────────────────────────────────
+  const canvas = document.getElementById('hearts');
+  const ctx    = canvas.getContext('2d');
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const COLORS = ['#e8a0b4', '#c8748a', '#f5c6d4', '#d4748a'];
+
+  function mkHeart() {
+    return {
+      x:       Math.random() * W,
+      y:       H + 24,
+      size:    Math.random() * 14 + 5,
+      speed:   Math.random() * 0.45 + 0.15,
+      alpha:   Math.random() * 0.22 + 0.04,
+      drift:   (Math.random() - 0.5) * 0.45,
+      color:   COLORS[Math.floor(Math.random() * COLORS.length)],
+    };
+  }
+
+  // Seed some hearts across the screen
+  let hearts = Array.from({ length: 18 }, () => {
+    const h = mkHeart();
+    h.y = Math.random() * H;
+    return h;
+  });
+
+  function drawHeart(x, y, s, alpha, color) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle   = color;
+    ctx.font        = `${s}px serif`;
+    ctx.textAlign   = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('♥', x, y);
+    ctx.restore();
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    hearts.forEach(h => {
+      h.y -= h.speed;
+      h.x += h.drift;
+      drawHeart(h.x, h.y, h.size, h.alpha, h.color);
+    });
+    hearts = hearts.filter(h => h.y > -30);
+    if (hearts.length < 22 && Math.random() < 0.025) hearts.push(mkHeart());
+    requestAnimationFrame(frame);
+  }
+
+  // ── Boot ───────────────────────────────────────────────────
+  syncTime();
+  setInterval(syncTime, 5 * 60 * 1000); // re-sync every 5 min
+
+  tick();
+  setInterval(tick, 250); // poll 4× / sec for sub-second accuracy
+
+  frame();
+</script>
+</body>
+</html>
