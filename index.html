@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>♡</title>
+  <title>Angels surround ya</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --rose:   #c8748a;
-      --blush:  #f0afc0;
-      --cream:  #fef0f3;
-      --glow:   rgba(200, 116, 138, 0.35);
+      --rose:  #c8748a;
+      --blush: #f0afc0;
+      --cream: #fef0f3;
+      --glow:  rgba(200, 116, 138, 0.35);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,17 +48,6 @@
     }
 
     /* ── countdown page ── */
-    .eyebrow {
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(13px, 2.2vw, 18px);
-      color: var(--rose);
-      letter-spacing: 4px;
-      opacity: 0.75;
-      margin-bottom: 56px;
-      text-align: center;
-    }
-
     .countdown-row {
       display: flex;
       align-items: flex-start;
@@ -123,45 +112,102 @@
 
     /* ── reveal page ── */
     #page-reveal {
+      padding-bottom: 110px;
+      cursor: pointer;
+    }
+
+    /* Play button */
+    #play-btn {
+      padding: 13px 32px;
+      border-radius: 40px;
+      border: 1px solid var(--rose);
       background: transparent;
+      color: var(--rose);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(14px, 1.8vw, 18px);
+      letter-spacing: 3px;
+      cursor: pointer;
+      opacity: 0.8;
+      box-shadow: 0 0 24px rgba(200, 116, 138, 0.15);
+      transition: opacity 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    #play-btn:hover {
+      opacity: 1;
+      transform: scale(1.06);
+      box-shadow: 0 0 44px var(--glow);
+    }
+    #play-btn.gone {
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .reveal-inner {
+    /* Poem */
+    .poem {
       text-align: center;
+      max-width: 600px;
+      opacity: 0;
+      transition: opacity 1.4s ease;
+      margin-top: 40px;
+    }
+    .poem.visible {
+      opacity: 1;
     }
 
-    .reveal-inner .big-heart {
-      font-size: clamp(64px, 15vw, 120px);
-      line-height: 1;
-      margin-bottom: 32px;
-      text-shadow: 0 0 60px var(--glow);
-      animation: pulse 2.4s ease-in-out infinite;
+    .poem-stanza {
+      margin-bottom: 0.5em;
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50%       { transform: scale(1.06); }
-    }
-
-    .reveal-inner h2 {
-      font-family: 'Cinzel', serif;
-      font-weight: 400;
-      font-size: clamp(16px, 3vw, 28px);
-      color: var(--cream);
-      letter-spacing: 4px;
-      opacity: 0.85;
-      margin-bottom: 18px;
-      text-shadow: 0 0 30px var(--glow);
-    }
-
-    .reveal-inner p {
+    .poem-line {
       font-style: italic;
       font-weight: 300;
-      font-size: clamp(13px, 1.8vw, 17px);
-      color: var(--rose);
-      opacity: 0.6;
-      letter-spacing: 2px;
+      font-size: clamp(15px, 2.1vw, 22px);
+      color: var(--cream);
+      letter-spacing: 0.5px;
+      line-height: 2;
+      opacity: 0.85;
     }
+
+    .poem-line.date-line {
+      color: var(--blush);
+      opacity: 0.95;
+      letter-spacing: 1px;
+    }
+
+    .poem-ornament {
+      color: var(--rose);
+      opacity: 0.3;
+      font-size: 13px;
+      letter-spacing: 14px;
+      margin: 0.7em 0;
+    }
+
+    /* ── lyrics bar ── */
+    #lyrics-bar {
+      position: fixed;
+      bottom: 72px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      padding: 0 32px;
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      pointer-events: none;
+    }
+    #lyrics-bar.active { opacity: 1; }
+
+    #lyric-line {
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(11px, 1.6vw, 16px);
+      color: var(--blush);
+      letter-spacing: 2px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    #lyric-line.visible { opacity: 0.85; }
+
   </style>
 </head>
 <body>
@@ -170,8 +216,6 @@
 
 <!-- ── Page 1: Countdown ── -->
 <div class="page" id="page-countdown">
-  <p class="eyebrow">something is coming</p>
-
   <div class="countdown-row">
     <div class="unit">
       <div class="unit-value" id="cd-days">--</div>
@@ -193,28 +237,53 @@
       <div class="unit-label">seconds</div>
     </div>
   </div>
-
-  <div class="ornament">· · · ♡ · · ·</div>
 </div>
 
-<!-- ── Page 2: Placeholder ── -->
+<!-- ── Page 2: Reveal ── -->
 <div class="page hidden" id="page-reveal">
-  <div class="reveal-inner">
-    <div class="big-heart">♡</div>
-    <h2>It's time</h2>
-    <p>[ your content goes here ]</p>
+  <button id="play-btn">play song</button>
+  <div class="poem">
+    <div class="poem-stanza">
+      <p class="poem-line date-line">Он эки ноль үч — сенин күнүң,</p>
+      <p class="poem-line date-line">Он үч ноль төрт — менин күнүм.</p>
+      <p class="poem-line">Жүрөк жылыткан назик үнүң,</p>
+      <p class="poem-line">Нурдай жайнап турган жүзүң.</p>
+    </div>
+    <div class="poem-stanza">
+      <p class="poem-line date-line">Он төрт ноль беш — чайлашайлы,</p>
+      <p class="poem-line">Биздин кун деп мер басайлы</p>
+      <p class="poem-line">Сыр дүйнөгө жол ачайлы.</p>
+      <p class="poem-line">Келечекти бир жазайлы.</p>
+    </div>
   </div>
 </div>
 
+<!-- ── Lyrics bar ── -->
+<div id="lyrics-bar">
+  <p id="lyric-line"></p>
+</div>
+
+<audio id="bg-music">
+  <source src="Mallrat x The Chainsmokers - Wish On An Eyelash, Pt. 2.mp3" type="audio/mpeg">
+</audio>
+
 <script>
-  // ── Target: 2026-05-13 16:00:00 UTC ──
+  // ── Target: 2026-05-13 16:00:00 UTC ──────────────────────
   const TARGET_MS = new Date('2026-05-13T16:00:00Z').getTime();
 
-  // timeOffset = serverNow - localNow  (ms)
   let timeOffset = 0;
-  let revealed    = false;
+  let revealed   = false;
 
-  // ── Time sync ──────────────────────────────────────────────
+  // ── Secret code: type "i love you" to open reveal ────────
+  let codeBuffer = '';
+  document.addEventListener('keydown', e => {
+    if (revealed || e.key.length !== 1) return;
+    codeBuffer += e.key.toLowerCase();
+    if (codeBuffer.length > 20) codeBuffer = codeBuffer.slice(-20);
+    if (codeBuffer.replace(/[^a-z]/g, '').endsWith('iloveyou')) reveal();
+  });
+
+  // ── Time sync ─────────────────────────────────────────────
   async function tryFetch(url) {
     const r = await fetch(url, { cache: 'no-store' });
     if (!r.ok) throw new Error(r.status);
@@ -238,7 +307,7 @@
 
   function serverNow() { return Date.now() + timeOffset; }
 
-  // ── Countdown ──────────────────────────────────────────────
+  // ── Countdown ─────────────────────────────────────────────
   function pad(n) { return String(Math.floor(Math.abs(n))).padStart(2, '0'); }
 
   const elDays  = document.getElementById('cd-days');
@@ -250,13 +319,8 @@
 
   function tick() {
     if (revealed) return;
-
     const diff = TARGET_MS - serverNow();
-
-    if (diff <= 0) {
-      reveal();
-      return;
-    }
+    if (diff <= 0) { reveal(); return; }
 
     const total = Math.floor(diff / 1000);
     const secs  = total % 60;
@@ -288,7 +352,114 @@
     }, 800);
   }
 
-  // ── Floating hearts ────────────────────────────────────────
+  // ── Play button → starts audio + lyrics sync ─────────────
+  document.getElementById('play-btn').addEventListener('click', () => {
+    document.getElementById('play-btn').classList.add('gone');
+    document.querySelector('.poem').classList.add('visible');
+    document.getElementById('bg-music').play();
+    document.getElementById('lyrics-bar').classList.add('active');
+    lyricStart   = performance.now();
+    lastLyricIdx = -1;
+    lyricTick();
+  });
+
+  // ── Lyrics (LRC-timed) ────────────────────────────────────
+  const LYRICS = [
+    { t:  20.15, text: "I've been trying to tell ya" },
+    { t:  22.45, text: "I've been dying to tell ya" },
+    { t:  24.55, text: "Want you all to myself, I" },
+    { t:  26.88, text: "Want you all to myself and" },
+    { t:  29.42, text: "When we leave all the parties" },
+    { t:  31.82, text: "When we're not in our bodies" },
+    { t:  34.24, text: "When we're up in a spaceship" },
+    { t:  36.49, text: "That's when I feel the greatest" },
+    { t:  38.53, text: "I made a wish on an eyelash" },
+    { t:  41.20, text: "Made a wish on 11s" },
+    { t:  43.42, text: "Made a wish on my birthday" },
+    { t:  45.73, text: "Talk about you to Heaven" },
+    { t:  47.88, text: "I plan my days all around ya" },
+    { t:  50.67, text: "Planets orbit around ya" },
+    { t:  53.15, text: "I was lost 'til I found ya" },
+    { t:  55.29, text: "I think angels surround ya" },
+    { t:  57.73, text: "I think angels surround ya" },
+    { t:  60.07, text: "I think angels surround ya" },
+    { t:  62.36, text: "I think angels surround ya" },
+    { t:  64.65, text: "(I think angels) surround ya" },
+    { t:  67.03, text: "I think angels surround ya" },
+    { t:  69.45, text: "I think angels surround ya" },
+    { t:  71.85, text: "I think angels surround ya" },
+    { t:  74.30, text: "(I think angels)" },
+    { t:  77.20, text: "" },
+    { t:  85.26, text: "Hey-ya, hey-ya" },
+    { t:  89.97, text: "Hey-ya, hey-ya" },
+    { t:  95.31, text: "I've been trying to tell ya" },
+    { t:  97.58, text: "I've been dying to tell ya" },
+    { t:  99.85, text: "You're the one that I need and" },
+    { t: 102.21, text: "You're takin' off all of my weakness" },
+    { t: 104.63, text: "Drivin' back from the airport" },
+    { t: 106.81, text: "Starin' back on a dance floor" },
+    { t: 109.47, text: "Laughin' 'bout things that we hate" },
+    { t: 111.69, text: "That's when I feel the greatest" },
+    { t: 113.89, text: "I made a wish on an eyelash" },
+    { t: 116.49, text: "Made a wish on 11s" },
+    { t: 118.92, text: "Made a wish on my birthday" },
+    { t: 121.03, text: "And talk about you to Heaven" },
+    { t: 123.28, text: "I plan my days all around ya" },
+    { t: 125.95, text: "Planets orbit around ya" },
+    { t: 128.34, text: "I was lost 'til I found ya" },
+    { t: 130.30, text: "I think angels surround ya" },
+    { t: 132.89, text: "I think angels surround ya" },
+    { t: 135.22, text: "I think angels surround ya" },
+    { t: 137.78, text: "I think angels surround ya" },
+    { t: 139.96, text: "(I think angels) surround ya" },
+    { t: 142.13, text: "I think angels surround ya" },
+    { t: 144.51, text: "I think angels surround ya" },
+    { t: 147.12, text: "I think angels surround ya" },
+    { t: 150.85, text: "" },
+    { t: 158.79, text: "(I think angels)" },
+    { t: 160.77, text: "Hey-ya, hey-ya" },
+    { t: 165.25, text: "Hey-ya, hey-ya" },
+    { t: 168.14, text: "I think angels surround ya" },
+    { t: 170.41, text: "(I made a wish on an eyelash)" },
+    { t: 172.75, text: "(Made a wish on 11s)" },
+    { t: 175.20, text: "(Made a wish on my birthday)" },
+    { t: 177.58, text: "(Talk about you to Heaven)" },
+    { t: 179.86, text: "(I plan my days all around ya)" },
+    { t: 182.38, text: "(Planets orbit around ya)" },
+    { t: 184.84, text: "(I was lost 'til I found ya)" },
+    { t: 187.08, text: "(I think angels) surround ya" },
+    { t: 188.96, text: "" },
+  ];
+
+  let lyricStart   = null;
+  let lastLyricIdx = -1;
+  const lyricEl    = document.getElementById('lyric-line');
+
+  function showLyric(text) {
+    lyricEl.classList.remove('visible');
+    setTimeout(() => {
+      lyricEl.textContent = text;
+      if (text) lyricEl.classList.add('visible');
+    }, 300);
+  }
+
+  function lyricTick() {
+    if (lyricStart !== null) {
+      const elapsed = (performance.now() - lyricStart) / 1000;
+      let idx = -1;
+      for (let i = 0; i < LYRICS.length; i++) {
+        if (LYRICS[i].t <= elapsed) idx = i;
+        else break;
+      }
+      if (idx !== lastLyricIdx) {
+        lastLyricIdx = idx;
+        showLyric(idx >= 0 ? LYRICS[idx].text : '');
+      }
+    }
+    requestAnimationFrame(lyricTick);
+  }
+
+  // ── Floating hearts ───────────────────────────────────────
   const canvas = document.getElementById('hearts');
   const ctx    = canvas.getContext('2d');
   let W, H;
@@ -304,17 +475,16 @@
 
   function mkHeart() {
     return {
-      x:       Math.random() * W,
-      y:       H + 24,
-      size:    Math.random() * 14 + 5,
-      speed:   Math.random() * 0.45 + 0.15,
-      alpha:   Math.random() * 0.22 + 0.04,
-      drift:   (Math.random() - 0.5) * 0.45,
-      color:   COLORS[Math.floor(Math.random() * COLORS.length)],
+      x:     Math.random() * W,
+      y:     H + 24,
+      size:  Math.random() * 14 + 5,
+      speed: Math.random() * 0.45 + 0.15,
+      alpha: Math.random() * 0.22 + 0.04,
+      drift: (Math.random() - 0.5) * 0.45,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
     };
   }
 
-  // Seed some hearts across the screen
   let hearts = Array.from({ length: 18 }, () => {
     const h = mkHeart();
     h.y = Math.random() * H;
@@ -323,10 +493,10 @@
 
   function drawHeart(x, y, s, alpha, color) {
     ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle   = color;
-    ctx.font        = `${s}px serif`;
-    ctx.textAlign   = 'center';
+    ctx.globalAlpha  = alpha;
+    ctx.fillStyle    = color;
+    ctx.font         = `${s}px serif`;
+    ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('♥', x, y);
     ctx.restore();
@@ -344,13 +514,11 @@
     requestAnimationFrame(frame);
   }
 
-  // ── Boot ───────────────────────────────────────────────────
+  // ── Boot ──────────────────────────────────────────────────
   syncTime();
-  setInterval(syncTime, 5 * 60 * 1000); // re-sync every 5 min
-
+  setInterval(syncTime, 5 * 60 * 1000);
   tick();
-  setInterval(tick, 250); // poll 4× / sec for sub-second accuracy
-
+  setInterval(tick, 250);
   frame();
 </script>
 </body>
