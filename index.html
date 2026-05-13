@@ -268,6 +268,10 @@
 </audio>
 
 <script>
+  // ── Config ────────────────────────────────────────────────
+  const ROMANTIC      = true;  // false → friendly (amber/gold) theme
+  const NO_COUNTDOWN  = false; // true  → skip straight to reveal (prod testing)
+
   // ── Target: 2026-05-13 16:00:00 UTC ──────────────────────
   const TARGET_MS = new Date('2026-05-13T16:00:00Z').getTime();
 
@@ -471,7 +475,8 @@
   window.addEventListener('resize', resize);
   resize();
 
-  const COLORS = ['#e8a0b4', '#c8748a', '#f5c6d4', '#d4748a'];
+  let COLORS     = ['#e8a0b4', '#c8748a', '#f5c6d4', '#d4748a'];
+  let PART_CHAR  = '♥';
 
   function mkHeart() {
     return {
@@ -498,7 +503,7 @@
     ctx.font         = `${s}px serif`;
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('♥', x, y);
+    ctx.fillText(PART_CHAR, x, y);
     ctx.restore();
   }
 
@@ -514,11 +519,25 @@
     requestAnimationFrame(frame);
   }
 
+  // ── Theme ─────────────────────────────────────────────────
+  function applyFriendlyTheme() {
+    const r = document.documentElement;
+    r.style.setProperty('--rose',  '#c8a246');
+    r.style.setProperty('--blush', '#e8c87a');
+    r.style.setProperty('--cream', '#fdf9ef');
+    r.style.setProperty('--glow',  'rgba(200, 162, 70, 0.35)');
+    document.body.style.background =
+      'radial-gradient(ellipse at 50% 30%, #1a1200 0%, #0a0800 55%, #040300 100%)';
+    document.title = '✨';
+    COLORS    = ['#e8c87a', '#c8a246', '#f5e0a0', '#d4aa5a'];
+    PART_CHAR = '✦';
+  }
+
   // ── Boot ──────────────────────────────────────────────────
+  if (!ROMANTIC) applyFriendlyTheme();
   syncTime();
   setInterval(syncTime, 5 * 60 * 1000);
-  tick();
-  setInterval(tick, 250);
+  if (NO_COUNTDOWN) { reveal(); } else { tick(); setInterval(tick, 250); }
   frame();
 </script>
 </body>
